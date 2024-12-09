@@ -1,0 +1,123 @@
+
+    @keyframes trSelect {
+    from {background-color: white;  }
+    to {background-color: rgb(251, 251, 218);  }
+    }
+
+
+table {
+  border-collapse: collapse;
+
+}
+
+thead tr th {
+ position:sticky;
+ background-color: rgb(228 240 245);
+ top:0;
+}
+
+thead,tfoot {
+  background-color: rgb(228 240 245);
+}
+
+th,td {
+  padding: 8px 10px;
+}
+
+
+
+    /* The element to apply the animation to */
+    .trSelet  {
+    animation-name: trSelect;
+    animation-duration: 3s;
+    animation-iteration-count: 999;
+    }
+
+    .trSelet td:first-child {
+        color: red !important;;
+    }
+
+
+    .text1:disabled {
+    color : gray !important;
+    }
+
+    .trSelet button {
+    background-color: #0dba7a; /* Green */
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 1s ease-out 100ms;
+    
+    }
+
+    .trSelet button:hover{
+         background-color: #005536; /* Green */
+         
+    }
+
+    .trSelet button:disabled  {
+        background-color: rgba(197, 197, 197, 0.481); /* Green */
+        color:rgb(130, 130, 130);
+        cursor:default;
+    }
+
+    .tableSetting{
+        margin: 10px;
+        padding: 5px;
+        border: 0px;
+    }
+
+    .tableSetting td{
+        padding: 10px;
+        color:gray
+    }
+
+
+    .tab_css{display:flex;flex-wrap:wrap;justify-content:left;}
+	.tab_css input{display:none}
+	.tab_css label{ padding: 10px 16px; margin-right: 10px; cursor: pointer; border-top-left-radius: 10px;border-top-right-radius: 10px; background-color: #c0c0c0; color: #ffffff; }
+	.tab_content{order:1;display: none;background-color: rgb(255, 255, 255); width:100%; border-bottom: 3px solid #ddd; border: 3px solid #ccc; border-radius: 5px;}
+	.tab_contentS{ padding: 15px;}
+	
+    .tab_css input:checked + label{opacity: 1; font-weight:bold;color:white; background-color: #000000;}
+     .tab_css label:hover{opacity: 1; font-weight:bold;color:white; background-color: #000000;opacity: 0.5;}
+	.tab_css input:checked + label + .tab_content{display: initial;}
+
+
+    .demo1 {
+    
+        border-bottom-right-radius: 50px;
+    margin: 0px 0;
+	width: 100%;
+	border: 3px solid #ccc;
+    background-color: rgb(255, 255, 255);
+
+}
+
+.demo2 {
+        border-Top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+    margin: 0px 0;
+	width: 100%;
+	border: 3px solid #ccc;
+    background-color: rgb(255, 255, 255);
+}
+
+    .demo4 {
+	border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    margin: 0px 0;
+	width: 100%;
+	height: 100px;
+	line-height: 50px;
+	border: 3px solid #ccc;
+    background-color: black;
+    color: white;
+	font-size: 24px;
+	font-weight: 500;
+	text-align: center;
+}
