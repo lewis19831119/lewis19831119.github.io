@@ -1,137 +1,490 @@
 <html>
 
-    <link href="stock.css" type="text/css" rel="stylesheet" >
-    <script src="echarts.min.js"></script>
-    <body style="background-color: #ede6ce;">
+<head>
+  <link rel="stylesheet" href="bootstrap.min.css" >
+  <link rel="stylesheet" href="table.css" >
+  <link rel="stylesheet" href="alert.css" >
+  <link rel="stylesheet" href="modal.css" >
+  <link href="stock.css" type="text/css" rel="stylesheet">
+    <meta charset="utf-8">
     
-        <div class="demo4"><H1>即時台灣個股分析  by Lewis </H1>  </div>
-        <div class="demo1">
-            <table class="tableSetting">
-                <tr id="tr1" >
-                    <td>
-                        step 1. <br>設定股票代碼
-                    </td>
-                    <td>
-                        <input type="text" id="stockid"  autocomplete="off" >
-                    </td>
-                    <td>
-                        <button id="BtnStep1"  onclick="funStep1();">確定 </button>
-                    </td>
-                </tr>
-                <tr  id="tr2">
-                    <td>
-                        step 2. <br>設定訓練樣本數(股票歷史資料)
-                    </td>
-                    <td>
-                        <select id="trainDayNum" disabled>
-                            <option value ="183">取半年資料</option>
-                            <option value ="365">取1年資料</option>
-                            <option value ="730">取2年資料</option>
-                        </select>
-                    </td>
-                    <td>
-                        <button disabled id="BtnStep2"   onclick="funStep2();">確定 </button>
-                    </td>
-                </tr>
-                <tr id="tr3">
-                    <td>
-                        step 3. <br>設定測試樣本數(預測隔日漲跌)
-                    </td>
-                    <td>
-                        <select id="testDayNum" disabled>
-                            <option value ="5">近一周</option>
-                            <option value ="10">近二周</option>
-                            <option value ="20">近一個月</option>
-                            <option value ="40">近二個月</option>
-                        </select>
-                    </td>
-                    <td >
-                        <button disabled id="BtnStep3"   onclick="funStep3();">確定 </button>
-                    </td>
-                </tr>
-                <tr id="tr4">
-                    <td>
-                        step 4. <br>設定預測推算的依據
-                    </td>
-                    <td>
-                        <input type="checkbox"  name="checkValue" value="RSI">
-                        <label > RSI</label><br>
-                        <input type="checkbox"   name="checkValue" value="MACD" disabled>
-                        <label > MACD</label><br>
-                        <input type="checkbox"  name="checkValue" value="MACD">
-                        <label > MACD</label>
-                    </td>
-                    <td >
-                        <button disabled id="BtnStep4"   onclick="funStep4();">確定 </button>
-                    </td>
-                </tr>
-    
-                <tr  id="tr5">
-                    <td>
-                        step 5. <br>取得資料&分析
-                    </td>
-                    <td >
-                        <button id="BtnStep5"  class="button"  disabled onclick="stockAnalysis();">下載資料&分析 </button>
-                    </td>
-                    <td>
-                        <button  id="BtnReset" class="button"  onclick="funReset();">reset </button>
-                    </td>
-                </tr>
-                <tr  >
-                    
-                </tr>
-            </table>
+</head>
+
+<script src="echarts.min.js"></script>
+
+
+  <body style="background-color: #ede6ce;padding: 10px;overflow-x: hidden;">
+
+        <div class="alertContainer">
         </div>
-            <div id ="trResult" style="margin-top: 10px">
-                <div class="tab_css">
+        
+        <input id="historyCollapse3" class="historyCollapse toggle" type="checkbox" checked hidden>
+        <label for="historyCollapse3" class="historyCollapseButton3 lbl-toggle">即時台灣個股分析</label>
+        <div class="divcontainer">
+            <div>
+              <div class="datatable-container"  >
 
-                    <input id="tab1" type="radio" name="tab" checked="checked"/>
-                    <label for="tab1" id="labProcess">進度</label>
-                    <div class="tab_content">
-                        <textarea id="txtCmd" style="padding: 10px;background-color: black; width:100%;height:400px;color:white; text-align: left;overflow:auto;" >
-                        </textarea>
+                <!-- ======= Header tools ======= -->
+                <div class="header-tools">
+                  <div class="tools">
+                    <ul>
+                      <li >
+                        <div class="box" onclick="modalShow('modalBuild','show')">build</div>
+                      </li>
+                      <li >
+                        <div class="box" onclick="modalShow('modalDeleteItem','show')">delete</div>
+                      </li>
+
+                      <li >
+                        <div class="box" id="btnRun"    onclick="itemStart();">Run</div>
+                      </li>
+
+                      <li>
+                        <div class="box" onclick="modalShow('modalSave','show')">save</div>
+                      </li>
+                      <li>
+                        <div class="box" id="btnLoad"  onclick="modalShow('modalLoad','show')">Load</div>
+                      </li>
+                      <li>
+                        <div class="box" onclick="itemUsedProcess()">continue</div>
+                      </li>
+
+                      <li>
+                        <div class="box" id="btnSendMail"  onclick="modalShow('modalSendMail','show')">send</div>
+                      </li>
+    
+                    </ul>
+                  </div>
+                  <div class="search">
+                    <input type="search" class="search-input" placeholder="Search..." />
+                  </div>
+              
+                </div>
+                <div style="width:100%;height: 550px; overflow-y: auto;" id="divTable">
+                <!-- ======= Table ======= -->
+                <table id="mainTable" class="datatable" style="color:white;background-color:rgba(71, 121, 157, 0.812);;" >
+                  <thead>
+                    <tr>
+                      <th><input type="checkbox" class="checkItem"  onclick="checkALL(this,'itemNum')" /></th>
+                      <th>狀態</th>
+                      <th>股票代碼</th>
+                      <th>分類</th>
+                      <th>買賣週期</th>
+                      <th>月獲利率</th>
+                      <th>目前定位</th>
+                      <th>起訖</th>
+                      <th>最佳指標</th>
+                      <th>訓練/測試/次數</th>
+                      <th>實際資訊</th>  
+                      <th>實際獲利率</th>
+                      <th>圖形顯示</th>
+                      <th>紀錄清單</th>
+
+                    </tr>
+                  </thead>
+              
+                  <tbody id="mainTbody" name="tbody">
+
+                </tbody>
+               </table>
+              </div>
+              
+                <!-- ======= Footer tools ======= -->
+                <div class="footer-tools" hidden >
+                  <div class="list-items" >
+                    Show
+                    <select name="n-entries" id="n-entries" class="n-entries">
+                      <option value="5">5</option>
+                      <option value="10" selected>10</option>
+                      <option value="15">15</option>
+                    </select>
+                    entries
+                  </div>
+              
+                  <div class="pages" >
+                    <ul>
+                      <li><span class="active">1</span></li>
+                      <li><button>2</button></li>
+                      <li><button>3</button></li>
+                      <li><button>4</button></li>
+                      <li><span>...</span></li>
+                      <li><button>10</button></li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+
+        <!--<div class="cardHeader "><H2>即時台灣個股分析  by Lewis </H2>  </div>-->
+
+
+        <div class="cardBody" id="cardBody1" style="display: none;">
+          
+          <input id="historyCollapse" class="historyCollapse toggle" type="checkbox" hidden checked>
+            <label for="historyCollapse" class="historyCollapseButton lbl-toggle" >分析內容    <div onclick="closeCard('cardBody1')"  style="position: absolute; right:10px; top:10px"> X </div> </label>
+            <div class="divcontainer">
+            
+                <div id="setting" style=" background: white;padding-left: 15px;padding-right: 15px;padding-bottom: 10px; border:3px;border-color: black;">
+                    <ul class="tabs">
+                        <li class="tab-link current" data-tab="tab-1" onclick="changeTab(this)">趨勢分析圖</li>
+                        <li class="tab-link" data-tab="tab-2"  hidden  onclick="changeTab(this)">其他</li>
+                        <li class="tab-link" data-tab="tab-3"  hidden onclick="changeTab(this)">黑名單設定</li>
+                    </ul>
+                    <div id="tab-1" class="tab-content current" > 
+                      <div id="chart1" style="width: 1300px;height:400px;border: 1px;background-color: white;" ></div>
                     </div>
-                    <input id="tab2" type="radio" name="tab"/>
-                    <label for="tab2" id="tab2_">數據資料</label>
-                    <div class="tab_content tab_contentS">
-                        <div id="main2" style="width:100%;height:400px;overflow-y:auto;">
 
-                            <table >
-                               <thead id ="tableTitle">
-                                  <tr>
-                                    <th >Person</th>
-                                    <th >Most interest in</th>
-                                    <th >Age</th>
-                                  </tr>
-                                </thead>
-                                <tbody id ="tableBody">
-                                  <tr>
-                                    <th scope="row">Chris</th>
-                                    <td>HTML tables</td>
-                                    <td>22</td>
-                                  </tr>
-                                
-                                </tbody>
-                              </table>
+                    <div id="tab-2" class="tab-content" style="padding:10px">
 
-                        </div>
+                  
+  
+  
+                    <select id="testDayNum" disabled hidden>
+                        <option value ="5">近一周</option>
+                    </select>
+
+               
+
                     </div>
-         
-                    <input id="tab3" type="radio" name="tab"/>
-                    <label for="tab3"  id="tab3_">分析圖</label>
-                    <div class="tab_content tab_contentS" style="overflow-y: auto;">
+                    <div id="tab-3" class="tab-content">
+                        <table style="width: 100%;">
+                          <thead>
+                            <tr>
+                              <td ></td> <td>股票</td><td>不顯示原因</td>
+                            </thead>
+                          <tbody id="tblNoUse">
+                            </tbody>
 
-                        <div id="chart1" style="width: 600px;height:400px;border: 1px;"></div>
+                        </table>
 
-                        <div id="chart2" style="width: 600px;height:400px;border: 1px;"></div>
-
-                        <div id="chart3" style="width: 600px;height:400px;border: 1px;"></div>
-
-                        <div id="chart4" style="width: 600px;height:400px;border: 1px;"></div>
                     </div>
                 </div>
+            </div> <!--divcontainer-->
+
+        </div>
+        <div class="cardBody" id="cardBody2" style="display: block;">
+          
+            <input id="historyCollapse2" class="historyCollapse toggle" type="checkbox" checked hidden>
+            <label for="historyCollapse2" class="historyCollapseButton2 lbl-toggle">細項紀錄  <div onclick="modalShow('cardBody2','hide')"  style="position: absolute; right:10px; top:10px"> X </div> </label>
+            <div class="divcontainer">
+                <div>
+                    <div class="col-md-12 col-sm-12">
+                          
+                        <div class="w4-table-div">
+                            <table class="w4-data-table" id="ChatTextArea">
+                                <thead class="w4-data-table">
+                                    <tr class="w4-data-table-column-row">
+                                        <th class="w4-data-table-column">
+                                            <span class="w4-data-table-heading">股票代碼</span>
+                                        </th>
+                                        <th class="w4-data-table-column">
+                                            <span class="w4-data-table-heading">名稱</span>
+                                        </th>
+                                        <th class="w4-data-table-column">
+                                            <span class="w4-data-table-heading">推測方式</span>
+                                        </th>
+                                        <th class="w4-data-table-column">
+                                            <span class="w4-data-table-heading"> 測試天數</span>
+                                        </th>
+                                        <th class="w4-data-table-column">
+                                            <span class="w4-data-table-heading"> 總獲利率 </span>
+                                        </th>
+                                        <th class="w4-data-table-column">
+                                            <span class="w4-data-table-heading">現在買賣點 & 測試結果</span>
+                                        </th>
+                                        <th class="w4-data-table-column">
+                                            <span class="w4-data-table-heading">目前價格</span>
+                                        </th>
+                                        <th class="w4-data-table-column">
+                                          <span class="w4-data-table-heading">交易次數</span>
+                                      </th>
+                                      <th class="w4-data-table-column">
+                                          <span class="w4-data-table-heading">月獲利率</span>
+                                      </th>
+                                    </tr>
+                                </thead>
+                                <tbody class "w4-data-table" id="itemReordTbody">
+                                </tbody>
+                            </table>
+                        </div>
+                </div>
+                </div>
             </div>
-    </body>
+
+
+        </div> <!-- card body -->
+
+
+        
+
+
+
+
+
+
+<div id="modalBuild" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content-SM" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >新增項目</h2>
+      </div>
+      <span class="close"  onclick="modalShow('modalBuild','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="min-height: 300px;overflow-y: auto;">
+      <div class="container" style="max-height: 300px;overflow-y: auto;">
+        <div class="row">
+          <div class="col-12">
+            <label for="selDateList">推算方式</label>
+            <textarea class="form-control" id="selDateList" style="cursor: pointer;" onclick="showDateList();modalShow('modalDateList','show')" rows="3" placeholder="請點選這，選擇股票" readonly></textarea>
+
+          
+            <div class="form-control mb-6" hidden>
+              <label for="end">迄:</label>
+              <input type="date" id="end" name="trip-end" value="2025-01-01" min="2024-01-01" max="2026-01-11" />
+            </div>
+
+            <label for="selStockList">股票清單</label>
+            <textarea class="form-control" id="selStockList" style="cursor: pointer;" onclick="showStockList();modalShow('modalStockList','show')" rows="3" placeholder="請點選這，選擇股票" readonly></textarea>
+
+
+            <label for="selTechIndex">技術指標</label>
+            <textarea class="form-control" id="selTechIndex" style="cursor: pointer;" onclick="showStockIndexList();modalShow('modalStockIndexList','show')" rows="3" placeholder="請點選這，設定指標" readonly></textarea>
+            </div> 
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info "  onclick="addItem();modalShow('modalBuild','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalBuild','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="modalDateList" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content-min" style="min-width: 500px;min-height:330px;" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >推算方式</h2>
+   
+      </div>
+      <span class="close"  onclick="modalShow('modalDateList','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="min-height:200px;background-color: #c7c7c73c;">
+    
+    
+    基準日
+      <input 
+      type="date" 
+      id="baseDate" 
+      name="date" 
+      required
+      min="2000-01-01" 
+      max="2030-12-31"
+      value="2025-02-14" 
+    >
+    <BR>
+     每次測試前，用多久時間找規則 (Train)
+        <div  id="dateList" style="width: 100%;"> 
+        </div>
+  
+        <div class="input-group">
+          <label for="days" style="margin-left: 10px;">一次測試多久(test)：</label>
+          <select id="days">
+            <option value="30">30 天</option>
+              <option value="60">60 天</option>
+              <option value="90">90 天</option>
+          </select>
+
+          <label for="times">測試幾次(n)：</label>
+          <select id="times">
+              <option value="1">1 次</option>
+              <option value="2">2 次</option>
+              <option value="3">3 次</option>
+  
+          </select>
+
+      </div>
+
+    <div style="font-size: 10px;">
+      起始天 + z( train + test * n  )  => 基準天 <BR>
+        假如 z =365,從一年前的日期 開始分析，找規則後，拿test*n 來做依據 是否能獲利
+   </div>
+
+    </div>
+    <div class="modal-footer">
+     <button type="button" class="btn btn-info "  onclick="setDateList();modalShow('modalDateList','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalDateList','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="modalStockList" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content" style="min-height:680px;" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >股票代碼</h2>
+      </div>
+      <span class="close"  onclick="modalShow('modalStockList','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="min-height:600px;background-color: #c7c7c73c;">
+      <div style="overflow-x:scroll;overflow-y:scroll; height: 580px; width:1400px">
+        <div  id="stockList" style="width: 7500px;"> 
+
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+     <button type="button" class="btn btn-info "  onclick="setStockList();modalShow('modalStockList','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalStockList','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="modalStockIndexList" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content" style="min-height:680px;" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >指標清單</h2>
+      </div>
+      <span class="close"  onclick="modalShow('modalStockIndexList','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="min-height:600px;background-color: #c7c7c73c;">
+      <div style="overflow-x:scroll;overflow-y:scroll; height: 580px; width:1400px">
+        <div  id="stockIndexList" style="width: 1400px;"> 
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+     <button type="button" class="btn btn-info "  onclick="setStockIndexList();modalShow('modalStockIndexList','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalStockIndexList','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<div id="modalSave" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content-min" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >儲存設定</h2>
+      </div>
+      <span class="close"  onclick="modalShow('modalSave','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="height: 100px;">
+      <p> 請輸入存檔名稱 </p>
+      <input id="settingString" name="settingString" type="text" class="form-control" value="">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info " style="display: none;"  id="saveNew" onclick="saveCommonSet('new');modalShow('modalSave','hide')">另存新檔</button>
+      <button type="button" class="btn btn-info "  onclick="saveCommonSet();modalShow('modalSave','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalSave','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="modalLoad" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content-min" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >讀取設定</h2>
+      </div>
+      <span class="close"  onclick="modalShow('modalLoad','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="height: 100px;">
+      <label class="col-form-label" >請選取讀檔名稱</label>
+      <select id="loadSettingNum" type="text" class="form-control">
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info "  onclick="loadCommonSet();modalShow('modalLoad','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalLoad','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="modalLoadIng" class="modal">
+  <!-- Modal content -->
+  <div id="loading"></div>
+</div>
+
+<div id="modalDeleteItem" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content-min" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >刪除項目</h2>
+      </div>
+      <span class="close"  onclick="modalShow('modalDeleteItem','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="height: 120px;">
+      <label class="col-form-label" >刪除方式</label>
+      <select id="deleteMethod" type="text" class="form-control">
+          <option value="checkItem"> 有勾選的 </option>
+          <option value="noBuy"> 沒有買的 </option>
+          <option value="noBound"> 沒有獲利的 </option>
+          <option value="lewBound3"> 獲利的少於3%</option>
+          <option value="lewBound5"> 獲利的少於5%</option>
+          <option value="lewBound10"> 獲利的少於10%</option>
+      </select>
+      <input type="checkbox"  class="labelcheckbox"   style="accent-color: brgb(0, 255, 13);margin-top: 20px;"  id="chkNoUse">  <label>並列入不分析項目</label> <br>
+                                        
+    </div>
+    <checkbox>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-info "  onclick="deleteItem();modalShow('modalDeleteItem','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalDeleteItem','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+
+<div id="modalSendMail" class="modal">
+  <!-- Modal content -->
+  <div class="modal-content-min" >
+    <div class="modal-header">
+      <div class="pull-left">
+      <h2 >E-mail寄送</h2>
+      </div>
+      <span class="close"  onclick="modalShow('modalSendMail','hide')">&times;</span>
+    </div>
+    <div class="modal-body" style="height: 100px;">
+      <p> 請輸入Email </p>
+      <input id="EmailString" name="EmailString" type="text" class="form-control" value="">
+    </div>
+    <div class="modal-footer">
+     <button type="button" class="btn btn-info "  onclick="sendMail();modalShow('modalSendMail','hide')">確定</button>
+      <button type="button" class="btn btn-info "  onclick="modalShow('modalSendMail','hide')">關閉</button>
+    </div>
+  </div>
+</div>
+
+
+</body>
 </html>
 
-<script src="stock.js"></script>
+
+
+<script src="stock.js"></script>   
+<script src="parameter.js"></script>
+
+                           
