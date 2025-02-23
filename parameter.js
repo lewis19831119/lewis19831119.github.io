@@ -14,6 +14,25 @@
             }
      }
 
+   function checkALLStock(element ){
+       
+        for (let x = 0 ; x < stock_type.length ; x++){ 
+           
+            if (stock_type[x].kind =='上市'){
+                let checkboxes1 = document.getElementById('Box' +x);
+                checkboxes1.checked=element.checked ;
+    
+                let checkboxes = document.getElementsByName('stockBox' +x);
+          
+                for (var i = 0; i < checkboxes.length; i++) {
+                    checkboxes[i].checked=element.checked ;
+    
+                }
+            }
+    
+                    
+        }
+     }
 
      
 stock_type.push( { kind:'上市',type:'半導體'});
