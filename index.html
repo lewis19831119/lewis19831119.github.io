@@ -2,8 +2,9 @@
 
 <head>
   <link rel="stylesheet" href="bootstrap.min.css" >
-    <link rel="stylesheet" href="stock.css" >
-
+  <link rel="stylesheet" href="table.css" >
+  <link rel="stylesheet" href="alert.css" >
+  <link rel="stylesheet" href="modal.css" >
   <link href="stock.css" type="text/css" rel="stylesheet">
     <meta charset="utf-8">
     
@@ -284,7 +285,7 @@
       required
       min="2000-01-01" 
       max="2030-12-31"
-      value="2025-02-14" 
+      value="2025-02-12" 
     >
     <BR>
      每次測試前，用多久時間找規則 (Train)
@@ -303,7 +304,7 @@
           <select id="times">
               <option value="1">1 次</option>
               <option value="2">2 次</option>
-              <option value="3">3 次</option>
+              <option value="3" selected>3 次</option>
   
           </select>
 
@@ -328,7 +329,9 @@
   <div class="modal-content" style="min-height:680px;" >
     <div class="modal-header">
       <div class="pull-left">
-      <h2 >股票代碼</h2>
+      <label style="font-size: 36px;">股票代碼 </label>
+    
+      <input type="checkbox"  class="labelcheckbox"  style="font-size:12px;accent-color: brgb(0, 255, 13);" onclick="checkALLStock(this)" > <label>上市選全</label>
       </div>
       <span class="close"  onclick="modalShow('modalStockList','hide')">&times;</span>
     </div>
@@ -482,8 +485,18 @@
 </html>
 
 
-<script src="chart.js"></script> 
-<script src="stock.js"></script>   
+
+<script src="basis.js"></script>
+<script src="main.js"></script>
+<script src="rule1.js"></script>
+<script src="rule2.js"></script>
+<script src="tech_index.js"></script>
+<script src="table.js"></script>
+<script src="chart.js"></script>
+<script src="alert.js"></script>
+<script src="modal.js"></script>
+<script src="itemProcess.js"></script>    
+<script src="itemUsedProcess.js"></script>    
 <script src="parameter.js"></script>
 
                            
