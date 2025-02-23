@@ -1,4 +1,7 @@
 
+	settingCount =5;
+
+ localStorage.setItem('settingCount' ,settingCount);
 
 function showChartForCBR(tableData , result ,item ,char_id){
 
