@@ -1782,7 +1782,6 @@ stock_setting.push( {  num:  stock_setting.length ,checked:false , id:8938  , n
 stock_setting.push( {  num:  stock_setting.length ,checked:false , id:8942  , name:'森鉅' ,kind:'上櫃',type:'其他'});
 
 
-debegger;
 
 if (noUseList.length>0){
     for (let x=0 ;x < noUseList.length ;x++ ){
