@@ -45,7 +45,7 @@ function showChartForTechIndex(tableData , result , item,char_id){
     for (let x =0;x<tableData.length ;x++){
         arrDate.push(tableData[x].date);
         arrData.push(tableData[x].close);
-        result.volumn.push(tableData[x].volumn);
+        result.volumn.push( Math.round(tableData[x].volumn/1000));
 
         if (rule_setting.tech_index=="KD"){
             //result.buyLine.push(result.buy);
