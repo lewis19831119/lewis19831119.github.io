@@ -45,7 +45,7 @@ function showChartForTechIndex(tableData , result , item,char_id){
     for (let x =0;x<tableData.length ;x++){
         arrDate.push(tableData[x].date);
         arrData.push(tableData[x].close);
-        result.volumn.push( Math.round(tableData[x].volumn/1000));
+        result.volumn.push(  parseInt( parseInt(tableData[x].volumn.replace(/,/g, "") )/1000));
 
         if (rule_setting.tech_index=="KD"){
             //result.buyLine.push(result.buy);
@@ -147,7 +147,7 @@ function printChartRule(arrDate,arrData1,arrData2 , chartID  ,result ,item  ){
 
     }else  if  (ruleName=="KD" || ruleName=="WR"  || ruleName=="MACD"  || ruleName=="RSI" )
         {
-            chartSetting.legendData =[attrName,'收盤','買入','賣出', ruleName +'買入線', ruleName+ '賣出線']
+            chartSetting.legendData =[attrName,'收盤','買入','賣出', ruleName +'買入線', ruleName+ '賣出線','成交量']
 
             chartSetting.titel  = item.stockInfo.id + item.stockInfo.name + "_指標("  +  attrName +')演算參數(' + rule_setting.trainDay + "-" + rule_setting.days + "-" + rule_setting.times  +")"   ;
 
