@@ -36,6 +36,8 @@ function showChartForTechIndex(tableData , result , item,char_id){
 
     result.Kline=[];
     result.Dline=[];
+    result.volumn=[];
+    
     
     let K = rule_setting.tech_index_parameter1;
     let D = rule_setting.tech_index_parameter2;
@@ -43,7 +45,7 @@ function showChartForTechIndex(tableData , result , item,char_id){
     for (let x =0;x<tableData.length ;x++){
         arrDate.push(tableData[x].date);
         arrData.push(tableData[x].close);
-
+        result.volumn.push(tableData[x].volumn);
 
         if (rule_setting.tech_index=="KD"){
             //result.buyLine.push(result.buy);
@@ -161,7 +163,17 @@ function printChartRule(arrDate,arrData1,arrData2 , chartID  ,result ,item  ){
                         color: 'rgb(255, 70, 131)'
                     },
                     data: arrData1
-               } ,                  
+               } ,     
+               ,
+           {
+                name: '成交量',
+                type: 'line',
+                yAxisIndex: 1,
+                itemStyle: {
+                    color: 'rgb(255, 190, 70)'
+                },
+                data: result.volumn
+           },             
                 {
                 name: attrName,
                 type: 'line',
