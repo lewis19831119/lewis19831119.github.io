@@ -11,6 +11,14 @@ function getDateFormat( num){
   return  year+ '-' + numberFormat(month) + '-' + numberFormat(day);
 }
 
+
+function numberFormat(num){
+  if (num < 10 )
+  return '0' + num;
+  else
+  return num;
+}
+
  document.getElementById("baseDate").value=getDateFormat(0);
 
     function toggleCheckbox(element , bln)
