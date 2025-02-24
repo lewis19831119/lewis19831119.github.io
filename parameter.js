@@ -2,6 +2,15 @@
       var stock_setting =[];
       var stock_type =[];
 
+function getDateFormat( num){
+  var date1 = new Date(Date.now() + num * 24*60*60*1000);
+  //console.log(date1);
+  let day=  date1.getDate();
+  let month = date1.getMonth()+1;
+  let year = date1.getFullYear();
+  return  year+ '-' + numberFormat(month) + '-' + numberFormat(day);
+}
+
  document.getElementById("baseDate").value=getDateFormat(0);
 
     function toggleCheckbox(element , bln)
