@@ -2,6 +2,8 @@
       var stock_setting =[];
       var stock_type =[];
 
+ document.getElementById("baseDate").value=getDateFormat(0);
+
     function toggleCheckbox(element , bln)
     {
       element.checked = !element.checked;
