@@ -274,7 +274,10 @@ function printChart( arrDate , chartID , attrName  ,chartSetting ,myChart){
         orient:'vertical',
         x:'left',
         y:'center',
-        data: chartSetting.legendData //[attrName,'收盤','買入_連漲','賣出_連跌','買入_跌漲','賣出_漲跌']
+        data: chartSetting.legendData, //[attrName,'收盤','買入_連漲','賣出_連跌','買入_跌漲','賣出_漲跌']
+               selected:{
+            '成交量':false
+        }
     },
     grid: {
         left: '150',
