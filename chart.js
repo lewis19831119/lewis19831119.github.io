@@ -23,7 +23,7 @@ function showChartForCBR(tableData , result ,item ,char_id){
 }
 
 
-function showChartForTechIndex(tableData , result , item,char_id){
+function showChartForTechIndex(tableData , result , item,char_id , chart){
 
     let rule_setting = item.rule_setting;
     let arrDate=[];
@@ -64,7 +64,7 @@ function showChartForTechIndex(tableData , result , item,char_id){
 
  
 
-    printChartRule(arrDate,arrData,arrData2,char_id , result ,item  )
+    printChartRule(arrDate,arrData,arrData2,char_id , result ,item  ,chart )
 
     document.getElementById(char_id).hidden = false; //tab
 }
@@ -72,7 +72,7 @@ function showChartForTechIndex(tableData , result , item,char_id){
 
 
 
-function printChartRule(arrDate,arrData1,arrData2 , chartID  ,result ,item  ){
+function printChartRule(arrDate,arrData1,arrData2 , chartID  ,result ,item  ,chart){
 
     let rule_setting = item.rule_setting;
 
@@ -258,15 +258,15 @@ function printChartRule(arrDate,arrData1,arrData2 , chartID  ,result ,item  ){
         }
 
 
-    printChart( arrDate, chartID , attrName  ,chartSetting);
+    printChart( arrDate, chartID , attrName  ,chartSetting ,chart);
     
 }
 
 
 
-function printChart( arrDate , chartID , attrName  ,chartSetting){
+function printChart( arrDate , chartID , attrName  ,chartSetting ,myChart){
 
-    let myChart = echarts.init(document.getElementById(chartID));
+     myChart = echarts.init(document.getElementById(chartID));
 
     // 指定图表的配置项和数据
     option = {
