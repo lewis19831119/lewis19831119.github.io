@@ -1,4 +1,4 @@
-
+    var chartCount=[];
 
 function showChartForCBR(tableData , result ,item ,char_id){
 
